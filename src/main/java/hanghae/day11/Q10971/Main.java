@@ -24,9 +24,15 @@ import java.util.StringTokenizer;
 
  */
 public class Main {
+    static int N; //도시 개수
+    static int[][] cost; //비용
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < N; i++) {
+
+        }
 
         StringTokenizer st = new StringTokenizer(br.readLine());
     }
