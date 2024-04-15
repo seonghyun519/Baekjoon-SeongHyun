@@ -1,9 +1,7 @@
 package hanghae.day9.Q2108;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 /**
  * 사용된 개념과 접근법, 어떻게 풀지에 대해 서술하고 시작한다.
@@ -29,50 +27,11 @@ import java.util.StringTokenizer;
 
  출력
  첫째 줄에는 산술평균을 출력한다. 소수점 이하 첫째 자리에서 반올림한 값을 출력한다.
-
  둘째 줄에는 중앙값을 출력한다.
-
  셋째 줄에는 최빈값을 출력한다. 여러 개 있을 때에는 최빈값 중 두 번째로 작은 값을 출력한다.
-
  넷째 줄에는 범위를 출력한다.
 
- 예제 입력 1
- 5
- 1
- 3
- 8
- -2
- 2
- 예제 출력 1
- 2
- 2
- 1
- 10
- 예제 입력 2
- 1
- 4000
- 예제 출력 2
- 4000
- 4000
- 4000
- 0
- 예제 입력 3
- 5
- -1
- -2
- -3
- -1
- -2
- 예제 출력 3
- -2
- -2
- -1
- 2
-
-
- 수학
- 구현
- 정렬
+ 산술평균 : N개
 
  * 그리고 각 핵심코드에 1)의도를 설명하는 주석 2)의미를 명료하게 밝히는 주석을 적습니다.
  아래 코드 참고
@@ -82,7 +41,57 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder sb = new StringBuilder();
+        int N = Integer.parseInt(br.readLine());
+        int[] arr = new int[N];
+        for (int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(br.readLine());
+        }
+        //산술평균---------
+        int sum = 0;
+        for (int i = 0; i < N; i++) {
+            sum += arr[i];
+        }
+        sb.append(Math.round((double) sum/N)).append('\n');
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
+        //중앙값------
+        int[] arrSort = arr;
+        Arrays.sort(arrSort);
+        int center = arrSort.length/2;
+        sb.append(arrSort[center]).append('\n');
+        //최빈값----------
+        TreeMap<Integer, Integer> map = new TreeMap<>();
+        for (int n : arrSort) {
+            map.put(n, map.getOrDefault(n, 0) + 1);
+        }
+        int max = Integer.MIN_VALUE;
+        int maxKey = 0;
+        //최빈 값
+        for (int n : map.keySet()) {
+            max = Math.max(max, map.get(n));
+        }
+        //최빈값이 두개인지
+        List<Integer> list = new ArrayList<>();
+        for (int n : map.keySet()) {
+            if (map.get(n) == max) {
+                list.add(n);
+            }
+        }
+        if (list.size() >= 2) {
+            sb.append(list.get(1)).append('\n');//2개 이상이면 두번째
+        }else {
+            sb.append(list.get(0)).append('\n');
+        }
+
+        //범위 최대값 최솟값 차이
+        int maxValue = Integer.MIN_VALUE;
+        int minValue = Integer.MAX_VALUE;
+        for (int n : arrSort) {
+            maxValue = Math.max(maxValue, n);
+            minValue = Math.min(minValue, n);
+        }
+        sb.append(maxValue-minValue).append('\n');
+
+        System.out.print(sb);
+
     }
 }

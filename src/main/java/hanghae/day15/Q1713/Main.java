@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.StringTokenizer;
 
 /**
@@ -44,20 +45,83 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int N = Integer.parseInt(br.readLine());//사진틀(최종 후보 인원)
         int C = Integer.parseInt(br.readLine());//추천 횟수
-        ArrayList<Integer> list = new ArrayList<>();
-        int[] students = new int[101];
+        ArrayList<Student> list = new ArrayList<>();
+        boolean[] students = new boolean[101];//현재 등록 되어있는지 확인 /학생을 나타내는 번호는 1부터 100까지의 자연수
         StringTokenizer st = new StringTokenizer(br.readLine());
 
         for (int i = 0; i < C; i++) {
-            int student = Integer.parseInt(st.nextToken());
-            if (list.size() < N) {//최종 후보 인원 만큼 등록 되었는지 체크
-                list.add(student);
-                students[student] += 1;
+            int studentNum = Integer.parseInt(st.nextToken());
+            if (list.size() < N) {//최종 후보 인원 만큼 등록 되었는지 체크 //학생들이 추천을 시작하기 전에 모든 사진틀은 비어있다.
+                if (!students[studentNum]) {// 첫 등록
+                    list.add(new Student(studentNum, 1, i));
+                    students[studentNum] = true; //현재 등록 상태 true
+                }else {//이미 추천 받은 상태
+                    for (Student s : list) {
+                        if (s.getNum() == studentNum){
+                            s.setLike(s.getLike()+1);//추천 수 추가
+                        }
+                    }
+                }
             }else { //최종 후보 자리가 없으면
-//                int min
+                if (students[studentNum]) { //등록된 상태
+                    for (Student s : list) {
+                        if (s.getNum() == studentNum) {
+                            s.setLike(s.getLike() + 1);
+                        }
+                    }
+                }else {//자리 없는 상태에서 첫 등록
+                    Collections.sort(list);//정렬 먼저 안해서 터짐!
+                    students[list.get(0).getNum()] = false;//후보자 제외
+                    list.remove(0);//정렬 후 like 같으면 먼저 등록한 순, like 낮은 순
+                    list.add(new Student(studentNum, 1, i));
+                    students[studentNum] = true;//후보자 등록
+                }
             }
         }
+        for (int i = 0; i < 101; i++) {
+            if (students[i]){
+                System.out.print(i + " ");
+            }
+        }
+//        int[] result = new int[N];//index 터짐!
+//        for (int j = 0; j < result.length; j++) {
+//            result[j] = list.get(j).getNum();
+//        }
+//        Arrays.sort(result);
+//        for (int r : result) {
+//            System.out.println(r + " ");
+//        }
+    }
+    static class Student implements Comparable<Student>{
+        int num;//추천 받은 학생 번호
+        int like;//추천수
+        int time;//등록 시간(0~)
 
 
+        public Student(int num, int like, int time) {
+            this.num = num;
+            this.like = like;
+            this.time = time;
+        }
+
+        public int getNum() {
+            return num;
+        }
+
+        public int getLike() {
+            return like;
+        }
+
+        public void setLike(int like) {
+            this.like = like;
+        }
+
+        @Override
+        public int compareTo(Student o) {
+            if (this.like == o.like) {//추천수가 같으면 먼저 등록된 순서 정렬
+                return this.time - o.time;
+            }
+            return this.like - o.like;//추천수가 낮은 순으로 정렬
+        }
     }
 }

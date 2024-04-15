@@ -8,57 +8,12 @@ import java.util.StringTokenizer;
 /**
  * 사용된 개념과 접근법, 어떻게 풀지에 대해 서술하고 시작한다.
  --------------------------------------------------
- * 이 클래스는 사용자가 지정한 최대 값까지 소수를 구한다.
- * 알고리즘은 에라스토테네스 체다.
- * 2에서 시작하는 정수 배열을 대상으로 작업한다.
- * 처음으로 남아 있는 정수를 찾아 배수를 모두 제거한다.
- * 배열에 더 이상 배수가 없을 때까지 반복한다.
- --------------------------------------------------
- 김형택은 지금 몰래 Spider Solitaire(스파이더 카드놀이)를 하고 있다. 형택이는 이 게임을 이길 때도 있었지만, 질 때도 있었다. 누군가의 시선이 느껴진 형택이는 게임을 중단하고 코딩을 하기 시작했다. 의심을 피했다고 생각한 형택이는 다시 게임을 켰다. 그 때 형택이는 잠시 코딩을 하는 사이에 자신의 게임 실력이 눈에 띄게 향상된 것을 알았다.
-
- 이제 형택이는 앞으로의 모든 게임에서 지지 않는다. 하지만, 형택이는 게임 기록을 삭제 할 수 없기 때문에, 자신의 못하던 예전 기록이 현재 자신의 엄청난 실력을 증명하지 못한다고 생각했다.
-
- 게임 기록은 다음과 같이 생겼다.
-
- 게임 횟수 : X
- 이긴 게임 : Y (Z%)
- Z는 형택이의 승률이고, 소수점은 버린다. 예를 들어, X=53, Y=47이라면, Z=88이다.
- X와 Y가 주어졌을 때, 형택이가 게임을 최소 몇 번 더 해야 Z가 변하는지 구하는 프로그램을 작성하시오.
-
- 입력
- 각 줄에 정수 X와 Y가 주어진다.
-
- 출력
- 첫째 줄에 형택이가 게임을 최소 몇 판 더 해야하는지 출력한다. 만약 Z가 절대 변하지 않는다면 -1을 출력한다.
-
- 제한
-
- 1 ≤ X ≤ 1,000,000,000
- 0 ≤ Y ≤ X
-
- 예제 입력 1
- 10 8
- 예제 출력 1
- 1
- 예제 입력 2
- 100 80
- 예제 출력 2
- 6
- 예제 입력 3
- 47 47
- 예제 출력 3
- -1
- 예제 입력 4
- 99000 0
- 예제 출력 4
- 1000
- 예제 입력 5
- 1000000000 470000000
- 예제 출력 5
- 19230770
-
- 수학
- 이분 탐색
+ * 53 47 88%
+ * 수학
+ * 이분 탐색
+ * 틀림
+ * 47 47 = -148 출력
+ *
 
  * 그리고 각 핵심코드에 1)의도를 설명하는 주석 2)의미를 명료하게 밝히는 주석을 적습니다.
  아래 코드 참고
@@ -68,7 +23,31 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder sb = new StringBuilder();
-
         StringTokenizer st = new StringTokenizer(br.readLine());
+
+        long X = Long.parseLong(st.nextToken());
+        long Y = Long.parseLong(st.nextToken());
+        int Z = (int)(100 * Y  / X);
+
+        long start = 1;
+        long end =X;
+
+        if (Z >= 99) {//한판이라도 지면 100% 불가, 100% 101% 불가
+            System.out.print(-1);
+            System.exit(0);
+            //return;
+        }
+        while (start <= end) {
+            int mid = (int)(start + end) / 2;
+            int percent= (int)(100 * (Y+mid)/(X+mid));
+
+            if (Z < percent){
+                end = mid -1;
+            } else {
+             start = mid + 1;
+            }
+        }
+        sb.append(start);
+        System.out.print(sb);
     }
 }
