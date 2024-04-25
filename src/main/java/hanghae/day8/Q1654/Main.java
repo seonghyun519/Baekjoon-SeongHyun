@@ -26,6 +26,7 @@ public class Main {
             arr[i] = Integer.parseInt(br.readLine());
             max = Math.max(max, arr[i]);
         }
+        //fifo
         long start = 1;
         long end = max;
         while (start <= end) {
